@@ -168,9 +168,135 @@ if (require("dplyr")) {
                    repos = "https://cloud.r-project.org")
 }
 
+if (require("caret")) {
+  require("caret")
+} else {
+  install.packages("caret", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## klaR ----
+if (require("klaR")) {
+  require("klaR")
+} else {
+  install.packages("klaR", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## e1071 ----
+if (require("e1071")) {
+  require("e1071")
+} else {
+  install.packages("e1071", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## readr ----
+if (require("readr")) {
+  require("readr")
+} else {
+  install.packages("readr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## LiblineaR ----
+if (require("LiblineaR")) {
+  require("LiblineaR")
+} else {
+  install.packages("LiblineaR", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## naivebayes ----
+if (require("naivebayes")) {
+  require("naivebayes")
+} else {
+  install.packages("naivebayes", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+if (!is.element("NHANES", installed.packages()[, 1])) {
+  install.packages("NHANES", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("NHANES")
+
+## dplyr ----
+if (!is.element("dplyr", installed.packages()[, 1])) {
+  install.packages("dplyr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("dplyr")
+
+## naniar ----
+# Documentation:
+#   https://cran.r-project.org/package=naniar or
+#   https://www.rdocumentation.org/packages/naniar/versions/1.0.0
+if (!is.element("naniar", installed.packages()[, 1])) {
+  install.packages("naniar", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("naniar")
+
+## ggplot2 ----
+# We require the "ggplot2" package to create more appealing visualizations
+if (!is.element("ggplot2", installed.packages()[, 1])) {
+  install.packages("ggplot2", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("ggplot2")
+
+## MICE ----
+# We use the MICE package to perform data imputation
+if (!is.element("mice", installed.packages()[, 1])) {
+  install.packages("mice", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("mice")
+
+## Amelia ----
+if (!is.element("Amelia", installed.packages()[, 1])) {
+  install.packages("Amelia", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("Amelia")
+
 # 1. Accuracy and Cohen's Kappa ----
 ## 1.a. Load the dataset ----
-data(PimaIndiansDiabetes)
+
+data(iris)
+
+library(readr)
+train <- read_csv("data/train.csv")
+View(train)
+
+# Are there missing values in the dataset?
+any_na(train_imputed)
+
+# How many?
+n_miss(train_imputed)
+
+# What is the percentage of missing data in the entire dataset?
+prop_miss(train_imputed)
+
+# How many missing values does each variable have?
+train_imputed %>% is.na() %>% colSums()
+
+# What is the number and percentage of missing values grouped by
+# each variable?
+miss_var_summary(train_imputed)
+
+# What is the number and percentage of missing values grouped by
+# each observation?
+miss_case_summary(train_imputed)
+
+# Which variables contain the most missing values?
+gg_miss_var(train_imputed)
+
+# Where are missing values located (the shaded regions in the plot)?
+vis_miss(train_imputed) + theme(axis.text.x = element_text(angle = 80))
+
+
 
 ## 1.b. Determine the Baseline Accuracy ----
 # Identify the number of instances that belong to each class (distribution or
@@ -184,34 +310,33 @@ data(PimaIndiansDiabetes)
 
 # This in turn implies that the baseline accuracy is 65%.
 
-pima_indians_diabetes_freq <- PimaIndiansDiabetes$diabetes
+train_Status_freq <- train_imputed$`Status`
 cbind(frequency =
-        table(pima_indians_diabetes_freq),
-      percentage = prop.table(table(pima_indians_diabetes_freq)) * 100)
+        table(train_Status_freq),
+      percentage = prop.table(table(train_Status_freq)) * 100)
 
 ## 1.c. Split the dataset ----
 # Define a 75:25 train:test data split of the dataset.
 # That is, 75% of the original data will be used to train the model and
 # 25% of the original data will be used to test the model.
-train_index <- createDataPartition(PimaIndiansDiabetes$diabetes,
+train_index <- createDataPartition(train_imputed$`Status`,
                                    p = 0.75,
                                    list = FALSE)
-pima_indians_diabetes_train <- PimaIndiansDiabetes[train_index, ]
-pima_indians_diabetes_test <- PimaIndiansDiabetes[-train_index, ]
+train_Status_train <- train_imputed[train_index, ]
+train_Status_test <- train_imputed[-train_index, ]
 
 ## 1.d. Train the Model ----
 # We apply the 5-fold cross validation resampling method
 train_control <- trainControl(method = "cv", number = 5)
 
-# We then train a Generalized Linear Model to predict the value of Diabetes
-# (whether the patient will test positive/negative for diabetes).
+# We then train a Generalized Linear Model to predict the value of medv.
 
 # `set.seed()` is a function that is used to specify a starting point for the
 # random number generator to a specific value. This ensures that every time you
 # run the same code, you will get the same "random" numbers.
 set.seed(7)
-diabetes_model_glm <-
-  train(diabetes ~ ., data = pima_indians_diabetes_train, method = "glm",
+status_model_glm <-
+  train(Status ~ ., data = train_Status_train, method = "glm",
         metric = "Accuracy", trControl = train_control)
 
 ## 1.e. Display the Model's Performance ----

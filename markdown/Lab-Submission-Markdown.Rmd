@@ -1,0 +1,234 @@
+---
+title: "Business Intelligence Lab Submission Markdown"
+author: "<Specify your group name here>"
+date: "<Specify the date when you submitted the lab>"
+output:
+  github_document: 
+    toc: yes
+    toc_depth: 4
+    fig_width: 6
+    fig_height: 4
+    df_print: default
+editor_options:
+  chunk_output_type: console
+---
+
+# Student Details
+
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Student ID Numbers and Names of Group Members** | *\<list one Student name, class group (just the letter; A, B, or C), and ID per line, e.g., 123456 - A - John Leposo; you should be between 2 and 5 members per group\>* |
+|                                                   |                                                                                                                                                                          |
+|                                                   | 1.  128998 - B - Crispus Nzano                                                                                                                                            |
+|                                                   |                                                                                                                                                                          |
+|                                                   | 2.  134100 - B - Timothy Obosi                                                                                                                                             |
+|                                                   |                                                                                                                                                                          |
+|                                                   | 3.  134092 - B - Alison Kuria                                                                                                                                                                                                                                                 |
+|                                                   |                                                                                                                                                                          |
+|                                                   | 4.  135269 - B - Clifford Kipchumba                                                                                                                          |
+|                                                   |                                                                                                                                                      |
+|                                                   | 5.  112826 - B - Matu Ngatia                                                                                                                          |
+|                                                   |                                                  
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **GitHub Classroom Group Name**                   | Team Kubwa                                                                                                       |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Course Code**                                   | BBT4206                                                                                                                                                                  |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Course Name**                                   | Business Intelligence II                                                                                                                                                 |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Program**                                       | Bachelor of Business Information Technology                                                                                                                              |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Semester Duration**                             | 21^st^ August 2023 to 28^th^ November 2023                                                                                                                               |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+# Setup Chunk
+
+We start by installing all the required packages
+
+```{r Install Packages, echo=TRUE, message=FALSE, warning=FALSE}
+## formatR - Required to format R code in the markdown ----
+
+if (require("languageserver")) {
+  require("languageserver")
+} else {
+  install.packages("languageserver", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+# Introduction ----
+# Resampling methods are techniques that can be used to improve the performance
+# and reliability of machine learning algorithms. They work by creating
+# multiple training sets from the original training set. The model is then
+# trained on each training set, and the results are averaged. This helps to
+# reduce overfitting and improve the model's generalization performance.
+
+# Resampling methods include:
+## Splitting the dataset into train and test sets ----
+## Bootstrapping (sampling with replacement) ----
+## Basic k-fold cross validation ----
+## Repeated cross validation ----
+## Leave One Out Cross-Validation (LOOCV) ----
+
+# STEP 1. Install and Load the Required Packages ----
+## caret ----
+if (require("caret")) {
+  require("caret")
+} else {
+  install.packages("caret", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## klaR ----
+if (require("klaR")) {
+  require("klaR")
+} else {
+  install.packages("klaR", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## e1071 ----
+if (require("e1071")) {
+  require("e1071")
+} else {
+  install.packages("e1071", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## readr ----
+if (require("readr")) {
+  require("readr")
+} else {
+  install.packages("readr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## LiblineaR ----
+if (require("LiblineaR")) {
+  require("LiblineaR")
+} else {
+  install.packages("LiblineaR", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## naivebayes ----
+if (require("naivebayes")) {
+  require("naivebayes")
+} else {
+  install.packages("naivebayes", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+```
+
+------------------------------------------------------------------------
+
+**Note:** the following "*KnitR*" options have been set as the defaults in this markdown:\
+`knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = TRUE, collapse = FALSE, tidy.opts = list(width.cutoff = 80), tidy = TRUE)`.
+
+More KnitR options are documented here <https://bookdown.org/yihui/rmarkdown-cookbook/chunk-options.html> and here <https://yihui.org/knitr/options/>.
+
+```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+	eval = TRUE,
+	echo = TRUE,
+	warning = FALSE,
+	collapse = FALSE,
+	tidy = TRUE
+)
+```
+
+------------------------------------------------------------------------
+
+**Note:** the following "*R Markdown*" options have been set as the defaults in this markdown:
+
+> output:\
+> \
+> github_document:\
+> toc: yes\
+> toc_depth: 4\
+> fig_width: 6\
+> fig_height: 4\
+> df_print: default\
+> \
+> editor_options:\
+> chunk_output_type: console
+
+# Loading the PimaIndians Dataset
+
+The PimaIndians Dataset is then loaded. 
+
+```{r Load Dataset}
+require("mlbench")
+
+data("PimaIndiansDiabetes")
+
+summary(PimaIndiansDiabetes)
+
+str(PimaIndiansDiabetes)
+
+```
+
+## Description of the Dataset
+
+We then display the number of observations and number of variables. 9 Variables and 768 observations.
+
+```{r Your Fourth Code Chunk}
+dim(PimaIndiansDiabetes)
+```
+
+Next, we display the quartiles for each numeric variable[*... this is the process of **"storytelling using the data."** The goal is to analyse the PimaIndians dataset and try to train a model to make predictions( which model is most suited for this dataset).*]{#highlight style="color: blue"}
+
+```{r Your Fifth Code Chunk}
+summary(PimaIndiansDiabetes)
+```
+
+# \<Splitting the dataset\>
+
+Split the dataset. Define an 80:20 train:test split ratio of the dataset (80% of the original data will be used to train the model and 20% of the original data will be used to test the model).
+
+```{r Your Sixth Code Chunk}
+train_index <- createDataPartition(PimaIndiansDiabetes$`diabetes`,
+                                   p = 0.80, list = FALSE)
+diabetes_dataset_train <- PimaIndiansDiabetes[train_index, ]
+diabetes_dataset_test <- PimaIndiansDiabetes[-train_index, ]
+
+```
+
+## \<Classification: SVM with Repeated k-fold Cross Validation\>
+SVM Classifier using 5-fold cross validation with 3 reps. We train a Support Vector Machine (for classification) using "diabetes" variable in the training dataset based on a repeated 5-fold cross validation train control with 3 reps.
+
+The repeated k-fold cross-validation method involves repeating the number of times the dataset is split into k-subsets. The final model accuracy/RMSE is taken as the mean from the number of repeats
+
+```{r Your Seventh Code Chunk}
+train_control <- trainControl(method = "repeatedcv", number = 5, repeats = 3)
+
+diabetes_dateset_model_svm <-
+  caret::train(`diabetes` ~ ., data = diabetes_dataset_train,
+               trControl = train_control, na.action = na.omit,
+               method = "svmLinearWeights2", metric = "Accuracy")
+```
+
+## \<Test the trained SVM model using the testing dataset\>
+We then proceed to train the model using the testing dataset namely "diabetes_dataset_test". We opted to use SVM because we had many variables and one of the benefits of SVM is that it allows us to find data that is not regularly distributed. It generally does not suffer from overfitting and performs well when there is a difference in classes.
+
+```{r Your Eighth Code Chunk}
+predictions_svm <- predict(diabetes_dateset_model_svm, diabetes_dataset_test[, 1:9])
+
+```
+
+## \<View a summary of the model and view the confusion matrix\>
+From the SVM performing on the PimaIndians dataset we can see that a pregnant woman is less likely to get diabetes given the different variables the test dataset had. On a confidence level of 95% we can say that the model was 72% accurate in predicting the likelihood of diabetes in pregnant women.
+
+```{r Your Ninth Code Chunk}
+print(diabetes_dateset_model_svm)
+caret::confusionMatrix(predictions_svm, diabetes_dataset_test$diabetes)
+
+```
+
+**etc.** as per the lab submission requirements. Be neat and communicate in a clear and logical manner.
+
+
+
+
+
+
+
+
